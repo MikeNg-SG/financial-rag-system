@@ -32,28 +32,37 @@ def rerank(reranker: CrossEncoder, query: str, chunks: list[dict], top_k: int = 
 
     return top_chunks
 
+def retrieve(client, reranker, query: str, top_k: int = 3, candidate_pool: int = 10) -> list[dict]:
+    # Load the cross-encoder model
+    reranker = get_reranker()
+    # Get a wide pool of candidate from hybrid search
+    results = hybrid_search(client, query, limit=candidate_pool)\
+    # Weaviate returns its own object type — convert each result into a
+    # plain dict so rerank() can work with it the same way it works with
+    # chunks anywhere else in the project 
+    candidates = []
+    for obj in results:
+        new_dict = {
+            "ticker": obj.properties["ticker"],
+            "item": obj.properties["item"],
+            "text": obj.properties["text"],
+        }
+        candidates.append(new_dict)
+
+    return rerank(reranker, query, candidates, top_k=top_k)
+
 if __name__ == "__main__":
     
     client = weaviate.connect_to_local()
-    reranker = get_reranker()
+    reranker = get_reranker()  # load once, reuse across calls
 
     query = "What was Apple's revenue?"
+    top_chunks = retrieve(client, reranker, query)
 
-    # Get a slightly larger candidate pool from hybrid search first
-    results = hybrid_search(client, query, limit=10)
-    candidates = [
-        {"ticker": obj.properties["ticker"], "item": obj.properties["item"], "text": obj.properties["text"]}
-        for obj in results
-    ]
-
-    print(" BEFORE reranking (hybrid search order)")
-    for i, c in enumerate(candidates[:3]):
-        print(f"{i+1}. {c['ticker']} | {c['item']} | {c['text'][:150]}")
-
-    reranked = rerank(reranker, query, candidates, top_k=3)
-
-    print("\n AFTER reranking (cross-encoder order)")
-    for i, c in enumerate(reranked):
-        print(f"{i+1}. {c['ticker']} | {c['item']} | {c['text'][:150]}")
+    print(f"Query: {query}\n")
+    for i, chunk in enumerate(top_chunks):
+        print(f"{i+1}. {chunk['ticker']} | {chunk['item']}")
+        print(f"   {chunk['text'][:200]}")
+        print()
 
     client.close()
