@@ -108,17 +108,21 @@ Retrieval combines two methods in one Weaviate query:
 - **Dense vector search** — semantic search using the embeddings above,
   strong on paraphrased or conceptually related questions
 
-These are blended using Weaviate's `alpha` parameter, which weights the
-semantic side of the blend (`alpha=1` = pure dense, `alpha=0` = pure BM25).
+I set `alpha=0.3` as a reasoned default, favoring keyword matching
+(70% weight) over semantic search (30%) given how much financial
+retrieval depends on exact terminology — tickers, line-item names, and
+specific figures.
 
 ### Reranking
 
-Since hybrid search retrieves a wider candidate pool (10 chunks) fast but
-imprecisely, a **cross-encoder** (`cross-encoder/ms-marco-MiniLM-L-6-v2`)
-reranks those candidates by feeding the query and each candidate chunk
-*together* into one model — far more accurate at judging true relevance
-than the bi-encoder-based hybrid search alone, at the cost of being too
-slow to run against the full dataset directly. The top 3 reranked chunks
+I let hybrid search retrieve a wider pool of 10 candidate chunks first,
+since it's fast but not always precise. Then a **cross-encoder**
+(`cross-encoder/ms-marco-MiniLM-L-6-v2`) reranks those 10 candidates by
+feeding the query and each chunk *together* into one model — this is far
+more accurate at judging true relevance than hybrid search's
+bi-encoder-based approach, but too slow to run against the full dataset
+directly. Running it only on the 10 pre-filtered candidates keeps this
+accurate step fast enough to use in practice. The top 3 reranked chunks
 are what actually get passed to generation.
 
 ## 3. Prompt + LLM Generation
