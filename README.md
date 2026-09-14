@@ -186,7 +186,6 @@ for generation, to avoid self-preference bias) to score two metrics:
 - **Answer Relevancy** — does the answer genuinely address the question
   asked?
 
-**Test questions:**
 ![RAGAS evaluation results](docs/screenshots/ragas-results.png)
 ### Why Answer Relevancy is lower and inconsistent
 
@@ -239,12 +238,27 @@ A Streamlit UI provides a simple front end: a question box, clickable
 example questions, and expandable source citations under every answer, so
 users can inspect exactly which retrieved text an answer is grounded in.
 
-## Tech stack
+## Tech Stack
 
-Python · `uv` · `sec-edgar-downloader` · BeautifulSoup ·
-`sentence-transformers` (`all-MiniLM-L6-v2`) · Weaviate ·
-`cross-encoder/ms-marco-MiniLM-L-6-v2` · Anthropic Claude · RAGAS ·
-Streamlit
+**Language & tooling**
+- **Python** — core language for the whole pipeline
+- **uv** — dependency and virtual environment management
+
+**Data acquisition & cleaning**
+- **sec-edgar-downloader** — pulls 10-K filings directly from the SEC's public API
+- **BeautifulSoup** — parses and strips HTML/XBRL markup from raw filings
+
+**Retrieval**
+- **sentence-transformers** (`all-MiniLM-L6-v2`) — converts text into 384-dimension embeddings for semantic search
+- **Weaviate** — vector database storing embedded chunks, supporting hybrid (keyword + semantic) search
+- **cross-encoder/ms-marco-MiniLM-L-6-v2** — reranks retrieved chunks for higher precision before generation
+
+**Generation & evaluation**
+- **Anthropic Claude** — generates grounded, cited answers from retrieved context
+- **RAGAS** — scores answer Faithfulness and Relevancy using an independent LLM judge
+
+**Interface**
+- **Streamlit** — the web UI users interact with
 
 ## Running it locally
 
