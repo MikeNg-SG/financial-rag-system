@@ -143,9 +143,9 @@ model's output faithful to the retrieved context rather than creatively
 paraphrasing or embellishing, which matters directly for a system whose
 core value is grounded, trustworthy financial information.
 
-### Evaluation
+## Evaluation
 
-## Retrieval accuracy
+### Retrieval accuracy
 
 An automated test set of 10 questions checks whether the correct
 company/section is actually retrieved. The questions fall into three
@@ -179,7 +179,7 @@ scoring script — it only distinguishes exact-match questions from the
 deliberately ambiguous questions. Both "failed" results are correct on
 manual review (see explanation above).*
 
-## Answer quality (RAGAS)
+### Answer quality (RAGAS)
 
 Used [RAGAS](https://docs.ragas.io) with an independent LLM judge
 (OpenAI GPT-4o mini — deliberately different from the Claude model used
@@ -210,31 +210,6 @@ Three questions consistently scored 0 on relevancy across runs:
   are genuinely answerable, and their persistent 0 scores across runs
   are worth further investigation — likely caused by citation-heavy,
   structured phrasing diverging from the question's natural wording.
-
-### A second, important finding: run-to-run variance in the judge's scoring
-
-Running the same evaluation twice produced **meaningfully different
-Faithfulness scores** for several questions — notably Question 8 (cloud
-computing risks), which dropped from 0.636 in one run to 0.091 in
-another, and Question 10, which dropped from 0.917 to 0.750. The overall
-Faithfulness average shifted from 0.920 to 0.834 between runs.
-
-This variance traces to a specific, documented constraint: newer Claude
-models reject an explicit low-temperature setting for structured judge
-calls, so the RAGAS judge (via `llm_factory`) had to run at
-**temperature=1.0** rather than a low, more deterministic setting — a
-limitation of the current model/library combination, not a design
-choice. This is a known tradeoff worth being transparent about: the
-*relative* pattern across questions (Tesla and ambiguous questions
-scoring lowest) is consistent between runs, but exact scores should be
-read as indicative rather than perfectly precise, and averaging multiple
-runs would give a more statistically stable result than any single run.
-
-**Takeaway:** the system is consistently trustworthy in avoiding
-fabricated claims (Faithfulness stays high across runs), while Answer
-Relevancy reliably flags the same three questions as needing attention —
-a stable, interpretable signal even though the exact numeric scores
-carry some run-to-run noise from the judge's forced sampling temperature.
 
 ### Interface
 
