@@ -143,17 +143,29 @@ core value is grounded, trustworthy financial information.
 
 ## Retrieval accuracy
 
-An automated test set checks whether the correct company/section is
-actually retrieved for a range of questions — including deliberately
-ambiguous multi-company questions and an out-of-scope question (a
-company not in the dataset) to test graceful refusal rather than
-hallucination.
+An automated test set of 10 questions checks whether the correct
+company/section is actually retrieved. The questions fall into three
+categories, each evaluated differently:
 
-**Result: 7/7 (100%) on well-defined questions.** Two additional
-adversarial questions (deliberately ambiguous across multiple companies)
-were reviewed manually — retrieval correctly surfaced only genuinely
-relevant companies in both cases (e.g. correctly excluding Apple from a
-cloud-computing question, since Apple has no major cloud business).
+- **7 questions** have one clearly correct company — these are scored
+  automatically (pass/fail).
+- **1 question** asks about Tesla, a company not in the dataset — this
+  tests graceful refusal rather than hallucination, and has no
+  "correct ticker" to check against, so it's excluded from the
+  pass/fail count and reviewed separately.
+- **2 questions** are deliberately ambiguous across multiple companies
+  (e.g. "cloud computing risks," relevant to Amazon, Google, *and*
+  Microsoft) — these also have no single correct ticker, so they're
+  excluded from the automated count and reviewed manually instead.
+
+**Result: 7/7 (100%) retrieval accuracy on the 7 questions with a single
+correct answer.** The remaining 3 questions (1 out-of-scope, 2 ambiguous)
+aren't included in that ratio because "correct" isn't a single ticker for
+them — they're assessed qualitatively instead: the out-of-scope question
+correctly triggered a refusal rather than a hallucinated answer, and
+both ambiguous questions correctly surfaced only genuinely relevant
+companies (e.g. Apple — which has no major cloud business — was
+correctly excluded from the cloud-computing question).
 
 ![Retrieval accuracy test results](docs/screenshots/retrieval-accuracy.png)
 
@@ -175,7 +187,7 @@ for generation, to avoid self-preference bias) to score two metrics:
   asked?
 
 **Test questions:**
-![RAGAS evaluation results](eval/screenshots/ragas-results.png)
+![RAGAS evaluation results](docs/screenshots/ragas-results.png)
 ### Why Answer Relevancy is lower and inconsistent
 
 **Faithfulness** checks whether each claim in an answer traces back to
