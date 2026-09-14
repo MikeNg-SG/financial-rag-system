@@ -1,6 +1,6 @@
 from sentence_transformers import CrossEncoder
 import weaviate
-from search import hybrid_search
+from financial_rag.search import hybrid_search
 
 def get_reranker() -> CrossEncoder:
     return CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')

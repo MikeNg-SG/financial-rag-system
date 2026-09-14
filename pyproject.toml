@@ -10,9 +10,13 @@ requires-python = ">=3.10"
 dependencies = [
     "anthropic<1.0",
     "beautifulsoup4>=4.15.0",
+    "langchain-community<0.4.2",
+    "langchain-openai>=1.6.2",
     "python-dotenv>=1.2.3",
+    "ragas>=0.4.3",
     "sec-edgar-downloader>=5.1.0",
     "sentence-transformers>=6.0.1",
+    "streamlit>=1.63.0",
     "weaviate-client>=4.23.1",
 ]
 

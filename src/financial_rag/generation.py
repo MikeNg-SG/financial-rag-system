@@ -26,7 +26,7 @@ load_dotenv()  # reads .env and makes ANTHROPIC_API_KEY available
 client_anthropic = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
 # Send the prompt to Claude and return the generated answer.
-def generate_answer(prompt: str, model: str = "claude-sonnet-4-6", temperature: float = 0.2, max_tokens: int = 500) -> str:
+def generate_answer(prompt: str, model: str = "claude-haiku-4-5-20251001", temperature: float = 0.2, max_tokens: int = 500) -> str:
     response = client_anthropic.messages.create(
         model=model,
         max_tokens=max_tokens,

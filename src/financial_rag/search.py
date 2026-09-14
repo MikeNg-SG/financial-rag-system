@@ -1,6 +1,6 @@
 import weaviate
 
-from embedding import get_embedding_model
+from financial_rag.embedding import get_embedding_model
 
 # Create hybrid search (sematic + keyword search)
 # Define alpha = 0.3 (30% keyword (BM25) + 70% semantic)

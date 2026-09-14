@@ -3,6 +3,7 @@ from sentence_transformers import SentenceTransformer
 def get_embedding_model() -> SentenceTransformer:
     return SentenceTransformer('all-MiniLM-L6-v2')
 
+# Testing embedding model
 if __name__ == "__main__":
     model = get_embedding_model()
 

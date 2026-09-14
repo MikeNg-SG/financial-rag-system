@@ -155,7 +155,7 @@ were reviewed manually — retrieval correctly surfaced only genuinely
 relevant companies in both cases (e.g. correctly excluding Apple from a
 cloud-computing question, since Apple has no major cloud business).
 
-![Retrieval accuracy test results](/financial_rag/eval/screenshots/Screenshot 2026-09-15 at 00.49.58.png)
+![Retrieval accuracy test results](docs/screenshots/retrieval-accuracy.png)
 
 *Note: the two "FAIL" labels above are a known limitation of the current
 scoring script — it only distinguishes exact-match questions from the
@@ -175,8 +175,7 @@ for generation, to avoid self-preference bias) to score two metrics:
   asked?
 
 **Test questions:**
-![alt text](/financial_rag/eval/screenshots/Screenshot 2026-09-15 at 00.44.28.png)
-
+![RAGAS evaluation results](eval/screenshots/ragas-results.png)
 ### Why Answer Relevancy is lower and inconsistent
 
 **Faithfulness** checks whether each claim in an answer traces back to

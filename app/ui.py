@@ -7,16 +7,14 @@ from financial_rag.generation import build_prompt, generate_answer
 
 st.set_page_config(page_title="Financial RAG", page_icon="📊", layout="centered")
 
-
+# Connect to Weaviate
 @st.cache_resource
 def get_client():
-    """Connect to Weaviate once, reused across every user interaction."""
     return connect_to_weaviate()
 
-
+# Load the cross-encoder
 @st.cache_resource
 def get_reranker_model():
-    """Load the cross-encoder once, reused across every user interaction."""
     return get_reranker()
 
 

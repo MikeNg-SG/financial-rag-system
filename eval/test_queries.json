@@ -1,0 +1,52 @@
+[
+    {
+        "question": "What was Apple's total revenue?",
+        "expected_ticker": "AAPL",
+        "expected_item": "Item 8."
+    },
+    {
+        "question": "What did Amazon's management say about growth in AWS?",
+        "expected_ticker": "AMZN",
+        "expected_item": "Item 7."
+    },
+    {
+        "question": "What are the main risk factors Google identifies in its business?",
+        "expected_ticker": "GOOGL",
+        "expected_item": "Item 1A."
+    },
+    {
+        "question": "What products and services does Microsoft offer?",
+        "expected_ticker": "MSFT",
+        "expected_item": "Item 1."
+    },
+    {
+        "question": "What was Apple's net income?",
+        "expected_ticker": "AAPL",
+        "expected_item": "Item 8."
+    },
+    {
+        "question": "What does Amazon consider a risk to its business?",
+        "expected_ticker": "AMZN",
+        "expected_item": "Item 1A."
+    },
+    {
+        "question": "What was Tesla's revenue last year?",
+        "expected_ticker": null,
+        "expected_item": null
+    },
+    {
+        "question": "What cloud computing risks does the company face?",
+        "expected_ticker": "ambiguous",
+        "expected_item": "Item 1A."
+    },
+    {
+        "question": "How much did Apple's revenue grow in dollar terms from 2024 to 2025?",
+        "expected_ticker": "AAPL",
+        "expected_item": "Item 8."
+    },
+    {       
+        "question": "What is the company's approach to artificial intelligence investments?",
+        "expected_ticker": "ambiguous",
+        "expected_item": "Item 7."
+    }
+]

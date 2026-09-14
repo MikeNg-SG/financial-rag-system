@@ -4,7 +4,7 @@ from pathlib import Path
 
 # Split the clean and reabale text into each item
 def split_by_item(clean_text: str) -> dict[str, str]:
-    # BFind every Item heading (e.g. "Item 7.") and its position in the text, regardless of upper/lower case
+    # Find every Item heading (e.g. "Item 7.") and its position in the text, regardless of upper/lower case
     pattern = r"\n(Item\s+\d+[A-C]?\.)"
     matches = list(re.finditer(pattern, clean_text, re.IGNORECASE))
 
