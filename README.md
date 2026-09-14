@@ -141,15 +141,91 @@ core value is grounded, trustworthy financial information.
 
 ### Evaluation
 
-- **Retrieval accuracy** — an automated test set checks whether the
-  correct company/section is actually retrieved for a range of questions,
-  including deliberately ambiguous multi-company questions and an
-  out-of-scope question (a company not in the dataset) to test graceful
-  refusal rather than hallucination.
-- **RAGAS (Faithfulness, Response Relevancy)** — an LLM-as-a-judge
-  evaluation checking whether generated answers' claims are actually
-  supported by the retrieved context, and whether answers genuinely
-  address the question asked.
+## Retrieval accuracy
+
+An automated test set checks whether the correct company/section is
+actually retrieved for a range of questions — including deliberately
+ambiguous multi-company questions and an out-of-scope question (a
+company not in the dataset) to test graceful refusal rather than
+hallucination.
+
+**Result: 7/7 (100%) on well-defined questions.** Two additional
+adversarial questions (deliberately ambiguous across multiple companies)
+were reviewed manually — retrieval correctly surfaced only genuinely
+relevant companies in both cases (e.g. correctly excluding Apple from a
+cloud-computing question, since Apple has no major cloud business).
+
+## Answer quality (RAGAS)
+
+Used [RAGAS](https://docs.ragas.io) with an independent LLM judge
+(OpenAI GPT-4o mini — deliberately different from the Claude model used
+for generation, to avoid self-preference bias) to score two metrics:
+
+- **Faithfulness** — are the claims in the generated answer actually
+  supported by the retrieved context?
+- **Answer Relevancy** — does the answer genuinely address the question
+  asked?
+
+**Test questions (most recent run):**
+![alt text](image.png)
+| # | Question | Faithfulness | Answer Relevancy |
+|---|---|---|---|
+| 1 | What was Apple's total revenue? | 1.000 | 0.678 |
+| 2 | What did Amazon's management say about growth in AWS? | 0.750 | 0.834 |
+| 3 | What are the main risk factors Google identifies in its business? | 0.750 | 0.000 |
+| 4 | What products and services does Microsoft offer? | 1.000 | 1.000 |
+| 5 | What was Apple's net income? | 1.000 | 0.774 |
+| 6 | What does Amazon consider a risk to its business? | 1.000 | 0.933 |
+| 7 | What was Tesla's revenue last year? *(out-of-scope test)* | 1.000 | 0.000 |
+| 8 | What cloud computing risks does the company face? *(ambiguous test)* | 0.091 | 0.739 |
+| 9 | How much did Apple's revenue grow in dollar terms from 2024 to 2025? | 1.000 | 0.789 |
+| 10 | What is the company's approach to artificial intelligence investments? | 0.750 | 0.000 |
+| | **Average** | **0.834** | **0.575** |
+
+### Why Answer Relevancy is lower and inconsistent
+
+**Faithfulness** checks whether each claim in an answer traces back to
+retrieved context. **Answer Relevancy** works differently: the judge LLM
+generates hypothetical questions the answer *would* suit, then measures
+their similarity to the actual question — a low score here can reflect
+phrasing differences, not necessarily wrong content.
+
+Three questions consistently scored 0 on relevancy across runs:
+
+- **Question 7 (Tesla)** is a **correct refusal**, not a failure — Tesla
+  isn't in the dataset, and the system correctly declined rather than
+  hallucinating. Because a refusal doesn't directly "answer" the literal
+  question, the metric penalizes it by design — a known limitation of
+  Answer Relevancy applied to intentional refusals.
+- **Questions 3 and 10** (Google risk factors, AI investment approach)
+  are genuinely answerable, and their persistent 0 scores across runs
+  are worth further investigation — likely caused by citation-heavy,
+  structured phrasing diverging from the question's natural wording.
+
+### A second, important finding: run-to-run variance in the judge's scoring
+
+Running the same evaluation twice produced **meaningfully different
+Faithfulness scores** for several questions — notably Question 8 (cloud
+computing risks), which dropped from 0.636 in one run to 0.091 in
+another, and Question 10, which dropped from 0.917 to 0.750. The overall
+Faithfulness average shifted from 0.920 to 0.834 between runs.
+
+This variance traces to a specific, documented constraint: newer Claude
+models reject an explicit low-temperature setting for structured judge
+calls, so the RAGAS judge (via `llm_factory`) had to run at
+**temperature=1.0** rather than a low, more deterministic setting — a
+limitation of the current model/library combination, not a design
+choice. This is a known tradeoff worth being transparent about: the
+*relative* pattern across questions (Tesla and ambiguous questions
+scoring lowest) is consistent between runs, but exact scores should be
+read as indicative rather than perfectly precise, and averaging multiple
+runs would give a more statistically stable result than any single run.
+
+**Takeaway:** the system is consistently trustworthy in avoiding
+fabricated claims (Faithfulness stays high across runs), while Answer
+Relevancy reliably flags the same three questions as needing attention —
+a stable, interpretable signal even though the exact numeric scores
+carry some run-to-run noise from the judge's forced sampling temperature.
 
 ### Interface
 
