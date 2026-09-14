@@ -155,6 +155,14 @@ were reviewed manually — retrieval correctly surfaced only genuinely
 relevant companies in both cases (e.g. correctly excluding Apple from a
 cloud-computing question, since Apple has no major cloud business).
 
+![Retrieval accuracy test results](/financial_rag/eval/screenshots/Screenshot 2026-09-15 at 00.49.58.png)
+
+*Note: the two "FAIL" labels above are a known limitation of the current
+scoring script — it only distinguishes exact-match questions from the
+`None` (out-of-scope) case, and doesn't yet have a distinct category for
+deliberately ambiguous questions. Both "failed" results are correct on
+manual review (see explanation above).*
+
 ## Answer quality (RAGAS)
 
 Used [RAGAS](https://docs.ragas.io) with an independent LLM judge
@@ -166,21 +174,8 @@ for generation, to avoid self-preference bias) to score two metrics:
 - **Answer Relevancy** — does the answer genuinely address the question
   asked?
 
-**Test questions (most recent run):**
-![alt text](image.png)
-| # | Question | Faithfulness | Answer Relevancy |
-|---|---|---|---|
-| 1 | What was Apple's total revenue? | 1.000 | 0.678 |
-| 2 | What did Amazon's management say about growth in AWS? | 0.750 | 0.834 |
-| 3 | What are the main risk factors Google identifies in its business? | 0.750 | 0.000 |
-| 4 | What products and services does Microsoft offer? | 1.000 | 1.000 |
-| 5 | What was Apple's net income? | 1.000 | 0.774 |
-| 6 | What does Amazon consider a risk to its business? | 1.000 | 0.933 |
-| 7 | What was Tesla's revenue last year? *(out-of-scope test)* | 1.000 | 0.000 |
-| 8 | What cloud computing risks does the company face? *(ambiguous test)* | 0.091 | 0.739 |
-| 9 | How much did Apple's revenue grow in dollar terms from 2024 to 2025? | 1.000 | 0.789 |
-| 10 | What is the company's approach to artificial intelligence investments? | 0.750 | 0.000 |
-| | **Average** | **0.834** | **0.575** |
+**Test questions:**
+![alt text](/financial_rag/eval/screenshots/Screenshot 2026-09-15 at 00.44.28.png)
 
 ### Why Answer Relevancy is lower and inconsistent
 
@@ -246,7 +241,7 @@ Streamlit
 uv sync
 docker run -d -p 8080:8080 -p 50051:50051 cr.weaviate.io/semitechnologies/weaviate:latest
 
-# Add your key to .env (see .env.example): ANTHROPIC_API_KEY=your_key
+# Add your key to .env (see .env.example): ANTHROPIC_API_KEY=your_key and OPENAI_API_KEY=your_key
 
 uv run src/financial_rag/ingestion.py
 uv run src/financial_rag/extraction_10K.py
