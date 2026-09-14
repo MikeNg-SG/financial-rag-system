@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Virtual environment (uv-managed)
+.venv/
+
+# Project data — regeneratable by running the pipeline scripts
+data/raw/
+data/processed/
+
+# macOS
+.DS_Store
+
+# VS Code (optional — some teams commit shared settings, most don't)
+.vscode/
+
+# Environment variables / secrets (important once you add API keys later)
+.env
+*.env.local
