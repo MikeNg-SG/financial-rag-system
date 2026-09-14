@@ -188,7 +188,7 @@ wheels = [
 ]
 
 [[package]]
-name = "finacial-rag"
+name = "financial-rag"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

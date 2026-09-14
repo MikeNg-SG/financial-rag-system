@@ -10,6 +10,8 @@ def clean_html_to_text(html: str) -> str:
         hidden_div.decompose()
 
     text = soup.get_text(separator='\n')
+    # Amazon uses non-breaking spaces (\xa0) in some headings — normalize them to regular spaces so Item labels match consistently
+    text = text.replace('\xa0', ' ')
     return text
 
 # Clean text for 4 companies
@@ -29,7 +31,7 @@ def clean_all_companies(companies: list[str], input_dir: str = 'data/processed',
 
         output_file = out_path / f"{ticker}_10k_clean.txt"
         output_file.write_text(clean_text, encoding="utf-8")
-        print(f"  → saved to {output_file} ({len(clean_text)} characters)\n")
+        print(f" -> saved to {output_file} ({len(clean_text)} characters)\n")
 
     return cleaned
 

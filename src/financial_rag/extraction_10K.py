@@ -1,4 +1,5 @@
 import re
+import json
 from pathlib import Path
 
 
@@ -17,6 +18,7 @@ def extract_10k_text(filepath: str) -> str:
                 return text_match.group(1)
 
     raise ValueError(f"No 10-K document found in {filepath}")
+
 
 if __name__ == '__main__':
     companies = ['AAPL', 'AMZN', 'GOOGL', 'MSFT']
@@ -38,7 +40,7 @@ if __name__ == '__main__':
         # Save the extracted text as its own clean file
         output_path = output_dir / f"{ticker}_10k_raw.txt"
         output_path.write_text(text, encoding="utf-8")
-        print(f"  → saved to {output_path} ({len(text)} characters)\n")
+        print(f"  -> saved to {output_path} ({len(text)} characters)\n")
 
     print("Done. Extracted companies:", list(extracted.keys()))
 
