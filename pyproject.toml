@@ -8,7 +8,9 @@ authors = [
 ]
 requires-python = ">=3.10"
 dependencies = [
+    "anthropic<1.0",
     "beautifulsoup4>=4.15.0",
+    "python-dotenv>=1.2.3",
     "sec-edgar-downloader>=5.1.0",
     "sentence-transformers>=6.0.1",
     "weaviate-client>=4.23.1",
